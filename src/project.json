@@ -1,10 +1,13 @@
 {
   "name": "AzureStorageWrapper",
+  "packOptions": {
+    
+  },
   "authors": [
     "Chad T",
     "Team Soda"
   ],
-  "version": "1.0.0-*",
+  "version": "1.0.1-beta",
   "buildOptions": {
     "debugType": "portable"
   },

@@ -30,7 +30,7 @@ namespace Soda.Storage
             _blobClient = _storageAccount.CreateCloudBlobClient();
         }
 
-        public async Task<string> Upload(Stream resource, string reference, string containerName)
+        public async Task<string> Upload(Stream resource, string reference, string containerName, string contentType = null)
         {
             if (resource == null)
             {
@@ -54,7 +54,21 @@ namespace Soda.Storage
             var blockBlob = container.GetBlockBlobReference(reference);
             await blockBlob.UploadFromStreamAsync(resource);
 
+            if (!string.IsNullOrEmpty(contentType))
+            {
+                blockBlob.Properties.ContentType = contentType;
+                await blockBlob.SetPropertiesAsync();
+            }
+
             return blockBlob.Uri.ToString();
+        }
+
+        public async Task<string> Upload(byte[] resource, string reference, string containerName, string contentType = null)
+        {
+            using (var ms = new MemoryStream(resource))
+            {
+                return await Upload(ms, reference, containerName, contentType);
+            }
         }
 
         private async Task<CloudBlobContainer> initialiseContainer(string containerName)
