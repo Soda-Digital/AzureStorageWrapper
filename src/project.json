@@ -1,4 +1,9 @@
 {
+  "name": "AzureStorageWrapper",
+  "authors": [
+    "Chad T",
+    "Team Soda"
+  ],
   "version": "1.0.0-*",
   "buildOptions": {
     "debugType": "portable"
@@ -9,7 +14,7 @@
   "frameworks": {
     "netstandard1.1": {
       "dependencies": {
-        "NETStandard.Library": "1.6.0"
+        "NETStandard.Library": "1.6.1"
       }
     }
   }
