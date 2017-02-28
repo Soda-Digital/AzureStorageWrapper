@@ -103,7 +103,7 @@ namespace Soda.Storage
                     SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
-
+                //note, this doesn't work.
                 blockBlob.Uri.Query.Insert(0, sas);
             }
 
