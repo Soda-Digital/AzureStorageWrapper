@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Net.Http;
 
 namespace Soda.Storage
 {
@@ -57,6 +58,7 @@ namespace Soda.Storage
                 await blockBlob.SetPropertiesAsync();
             }
 
+            //note this doesn't actually work
             return blockBlob.Uri.ToString();
         }
 
@@ -104,6 +106,7 @@ namespace Soda.Storage
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
                 //note, this doesn't work.
+                
                 blockBlob.Uri.Query.Insert(0, sas);
             }
 
