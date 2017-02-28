@@ -86,12 +86,15 @@ namespace Soda.Storage
 
         }
 
-        public async Task<BlobDetail> BlobDetails(string resource, string containerName)
+        public async Task<string> BlobUrl(string resource, string containerName = null)
         {
+            if (string.IsNullOrEmpty(resource))
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
             var container = await GetOrCreateContainer(containerName);
             var blockBlob = container.GetBlockBlobReference(resource);
 
-            
             if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
             {
                 var policy = new SharedAccessBlobPolicy()
@@ -103,12 +106,8 @@ namespace Soda.Storage
 
                 blockBlob.Uri.Query.Insert(0, sas);
             }
-            //this is used purely to get the length and content type
-            await blockBlob.FetchAttributesAsync();
 
-            var b = new BlobDetail(blockBlob.Uri.ToString(), blockBlob.Properties.Length, blockBlob.Properties.ContentType);
-
-            return b;
+            return blockBlob.Uri.ToString();
 
         }
 
@@ -117,6 +116,10 @@ namespace Soda.Storage
             if (string.IsNullOrEmpty(_defaultContainer) && string.IsNullOrEmpty(containerName))
             {
                 throw new ArgumentNullException(nameof(containerName));
+            }
+            if (string.IsNullOrEmpty(containerName))
+            {
+                containerName = _defaultContainer;
             }
             CloudBlobContainer container;
             if (!initialisedContainers.TryGetValue(containerName, out container))
