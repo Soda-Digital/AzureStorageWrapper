@@ -11,7 +11,7 @@ after_build:
 artifacts:
 - path: src\bin\%CONFIGURATION%
 cache:
-- '%USERPROFILE%\.nuget\packages
+- '%USERPROFILE%\.nuget\packages' -> "**\project.json"
 deploy:
   provider: NuGet
   server: https://www.myget.org/F/soda-digital/api/v2/package
