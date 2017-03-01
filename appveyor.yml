@@ -1,0 +1,10 @@
+version: 1.0.{build}
+os: Visual Studio 2015
+configuration: Release
+before_build:
+- dotnet restore -v Minimal
+build_script:
+- dotnet --info
+- dotnet build **\project.json -c %CONFIGURATION%
+after_build:
+- dotnet pack -c Release %CONFIGURATION%

@@ -117,7 +117,7 @@ namespace Soda.Storage
                     SharedAccessExpiryTime = sasTimeout
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
-
+                //todo better url concat
                 returnUri += sas;
             }
 
