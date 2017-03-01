@@ -6,7 +6,7 @@
     "Chad T",
     "Team Soda"
   ],
-  "version": "1.0.1-beta",
+  "version": "1.0.2-beta",
   "buildOptions": {
     "debugType": "portable"
   },

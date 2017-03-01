@@ -91,7 +91,7 @@ namespace Soda.Storage
 
         }
 
-        public async Task<string> BlobUrl(string resource, string containerName = null)
+        public async Task<string> BlobUrl(string resource, DateTime sasTimeout, string containerName = null)
         {
             if (string.IsNullOrEmpty(resource))
             {
@@ -107,7 +107,7 @@ namespace Soda.Storage
                 var policy = new SharedAccessBlobPolicy()
                 {
                     Permissions = SharedAccessBlobPermissions.Read,
-                    SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
+                    SharedAccessExpiryTime = sasTimeout
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
 
