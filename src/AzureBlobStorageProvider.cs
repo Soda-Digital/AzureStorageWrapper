@@ -50,15 +50,19 @@ namespace Soda.Storage
 
             var blockBlob = container.GetBlockBlobReference(reference);
             await blockBlob.UploadFromStreamAsync(resource);
-
+            
+            if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
+            {
+                blockBlob.Properties.CacheControl = "private";
+            }
             if (!string.IsNullOrEmpty(contentType))
             {
                 blockBlob.Properties.ContentType = contentType;
                 await blockBlob.SetPropertiesAsync();
             }
 
-            //note this doesn't actually work
-            return blockBlob.Uri.ToString();
+
+            return reference;
         }
 
         public async Task<string> Upload(byte[] resource, string reference, string containerName = null, string contentType = null)
@@ -96,6 +100,8 @@ namespace Soda.Storage
             var container = await GetOrCreateContainer(containerName);
             var blockBlob = container.GetBlockBlobReference(resource);
 
+            var returnUri = blockBlob.Uri.ToString();
+
             if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
             {
                 var policy = new SharedAccessBlobPolicy()
@@ -104,12 +110,11 @@ namespace Soda.Storage
                     SharedAccessExpiryTime = DateTime.UtcNow.AddMinutes(1)
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
-                //note, this doesn't work.
-                
-                blockBlob.Uri.Query.Insert(0, sas);
+
+                returnUri += sas;
             }
 
-            return blockBlob.Uri.ToString();
+            return returnUri;
 
         }
 
@@ -126,9 +131,12 @@ namespace Soda.Storage
             CloudBlobContainer container;
             if (!initialisedContainers.TryGetValue(containerName, out container))
             {
+                container = _blobClient.GetContainerReference(containerName);
                 await container.CreateIfNotExistsAsync(_defaultContainerAccessType, null, null);
                 //preload container permissions.
                 await container.GetPermissionsAsync();
+                //add to list of initialise containers.
+                initialisedContainers.Add(containerName, container);
             }
 
             return container;
