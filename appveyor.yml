@@ -7,4 +7,4 @@ build_script:
 - dotnet --info
 - dotnet build **\project.json -c %CONFIGURATION%
 after_build:
-- dotnet pack -c %CONFIGURATION%
+- dotnet pack src -c %CONFIGURATION%  --version-suffix {build}
