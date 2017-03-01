@@ -78,7 +78,7 @@ namespace Soda.Storage
             }
         }
 
-        public async Task<Stream> StreamResource(string resource, string containerName)
+        public async Task<Stream> StreamResource(string resource, string containerName = null)
         {
             var container = await GetOrCreateContainer(containerName);
 
@@ -89,6 +89,13 @@ namespace Soda.Storage
             
             return ms;
 
+        }
+
+        public async Task DeleteResource(string resource, string containerName = null)
+        {
+            var container = await GetOrCreateContainer(containerName);
+            var blockBlob = container.GetBlockBlobReference(resource);
+            await blockBlob.DeleteIfExistsAsync();            
         }
 
         public async Task<string> BlobUrl(string resource, DateTime sasTimeout, string containerName = null)
