@@ -86,7 +86,8 @@ namespace Soda.Storage
 
             var ms = new MemoryStream();
             await blockBlob.DownloadToStreamAsync(ms);
-            
+            ms.Position = 0;
+
             return ms;
 
         }
@@ -143,6 +144,7 @@ namespace Soda.Storage
                 //preload container permissions.
                 await container.GetPermissionsAsync();
                 //add to list of initialise containers.
+                //race condition here if two processors initiate them
                 initialisedContainers.Add(containerName, container);
             }
 
