@@ -10,8 +10,8 @@ after_build:
 - dotnet pack src -c %CONFIGURATION%  --version-suffix {build}
 artifacts:
 - path: src\bin\%CONFIGURATION%
-#cache:
-#- '%USERPROFILE%\.nuget\packages' -> '**\project.json'
+cache:
+- '%USERPROFILE%\.nuget\packages -> **\project.json'
 deploy:
   provider: NuGet
   server: https://www.myget.org/F/soda-digital/api/v2/package
