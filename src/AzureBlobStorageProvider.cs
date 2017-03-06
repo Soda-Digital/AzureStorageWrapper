@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
@@ -9,7 +9,7 @@ namespace Soda.Storage
 {
     public class AzureBlobStorageProvider
     {
-        private IDictionary<string, CloudBlobContainer> initialisedContainers = new Dictionary<string, CloudBlobContainer>();
+        private ConcurrentDictionary<string, CloudBlobContainer> initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
         private readonly CloudBlobClient _blobClient;
         private readonly string _defaultContainer;
         private readonly BlobContainerPublicAccessType _defaultContainerAccessType;
@@ -137,6 +137,7 @@ namespace Soda.Storage
                 containerName = _defaultContainer;
             }
             CloudBlobContainer container;
+            
             if (!initialisedContainers.TryGetValue(containerName, out container))
             {
                 container = _blobClient.GetContainerReference(containerName);
@@ -144,8 +145,7 @@ namespace Soda.Storage
                 //preload container permissions.
                 await container.GetPermissionsAsync();
                 //add to list of initialise containers.
-                //race condition here if two processors initiate them
-                initialisedContainers.Add(containerName, container);
+                initialisedContainers.TryAdd(containerName, container);
             }
 
             return container;
