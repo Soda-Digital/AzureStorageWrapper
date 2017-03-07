@@ -6,7 +6,7 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>AzureStorageWrapper</AssemblyName>
-    <PackageId>AzureWrapper</PackageId>
+    <PackageId>AzureStorageWrapper</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <Company>Soda Digital</Company>
     <Description>Helpers for common patterns when using Azure Blob Storage</Description>
