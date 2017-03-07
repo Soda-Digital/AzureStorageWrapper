@@ -9,7 +9,7 @@ build_script:
 - dotnet --info
 - dotnet build -c %CONFIGURATION%
 after_build:
-- dotnet pack -c %CONFIGURATION%  --version-suffix {build} --no-build
+- "dotnet pack -c %CONFIGURATION%  --version-suffix {build} --no-build"
 artifacts:
 - path: src\bin\%CONFIGURATION%\*.nupkg
 #cache:
