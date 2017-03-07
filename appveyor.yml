@@ -4,7 +4,7 @@ configuration: Release
 pull_requests:
   do_not_increment_build_number: true
 before_build:
-- dotnet restore -v Minimal
+- dotnet restore src -v Minimal
 build_script:
 - dotnet --info
 - dotnet build **\project.json -c %CONFIGURATION%

@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <VersionPrefix>1.0.2-beta</VersionPrefix>
+    <VersionPrefix>1.0.2</VersionPrefix>
+    <VersionSufix>beta</VersionSufix>
     <Authors>Chad T;Team Soda</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>AzureStorageWrapper</AssemblyName>
-    <PackageId>src</PackageId>
+    <PackageId>AzureWrapper</PackageId>
     <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <Company>Soda Digital</Company>
   </PropertyGroup>
 
   <ItemGroup>
