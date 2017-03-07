@@ -9,10 +9,16 @@ namespace Soda.Storage
 {
     public class AzureBlobStorageProvider
     {
+        private const string PRIVATE_CACHE_CONTROL = "private";
+
         private ConcurrentDictionary<string, CloudBlobContainer> initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
         private readonly CloudBlobClient _blobClient;
         private readonly string _defaultContainer;
         private readonly BlobContainerPublicAccessType _defaultContainerAccessType;
+
+        public Func<string> FileNameGenerator { get => _fileNameGenerator; set => _fileNameGenerator = value; }
+        private Func<string> _fileNameGenerator = () => Guid.NewGuid().ToString();
+
 
         public AzureBlobStorageProvider(string connectionString, string defaultContainer = null, BlobContainerPublicAccessType defaultContainerAccessType = BlobContainerPublicAccessType.Off)
         {
@@ -53,7 +59,7 @@ namespace Soda.Storage
             
             if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
             {
-                blockBlob.Properties.CacheControl = "private";
+                blockBlob.Properties.CacheControl = PRIVATE_CACHE_CONTROL;
             }
             if (!string.IsNullOrEmpty(contentType))
             {
@@ -108,7 +114,7 @@ namespace Soda.Storage
             var container = await GetOrCreateContainer(containerName);
             var blockBlob = container.GetBlockBlobReference(resource);
 
-            var returnUri = blockBlob.Uri.ToString();
+            var returnUri = blockBlob.Uri;
 
             if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
             {
@@ -118,11 +124,16 @@ namespace Soda.Storage
                     SharedAccessExpiryTime = sasTimeout
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
-                //todo better url concat
-                returnUri += sas;
+
+                Uri concatedUri;
+                if (Uri.TryCreate(returnUri, sas, out concatedUri))
+                {
+                    return concatedUri.ToString();
+                }
+                
             }
 
-            return returnUri;
+            return returnUri.ToString();
 
         }
 
@@ -150,7 +161,5 @@ namespace Soda.Storage
 
             return container;
         }
-
-      
     }
 }
