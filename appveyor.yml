@@ -7,7 +7,7 @@ before_build:
 - dotnet restore src -v Minimal
 build_script:
 - dotnet --info
-- dotnet build **\project.json -c %CONFIGURATION%
+- dotnet build src -c %CONFIGURATION%
 after_build:
 - dotnet pack src -c %CONFIGURATION%  --version-suffix {build}
 artifacts:
