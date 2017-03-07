@@ -4,12 +4,12 @@ configuration: Release
 pull_requests:
   do_not_increment_build_number: true
 before_build:
-- dotnet restore src -v Minimal
+- dotnet restore -v Minimal
 build_script:
 - dotnet --info
-- dotnet build src -c %CONFIGURATION%
+- dotnet build -c %CONFIGURATION%
 after_build:
-- dotnet pack src -c %CONFIGURATION%  --version-suffix {build}
+- dotnet pack -c %CONFIGURATION%  --version-suffix {build} --no-build
 artifacts:
 - path: src\bin\%CONFIGURATION%\*.nupkg
 #cache:
