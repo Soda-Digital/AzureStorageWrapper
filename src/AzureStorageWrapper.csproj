@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <VersionPrefix>1.0.2</VersionPrefix>
-    <VersionSufix>beta</VersionSufix>
+    <VersionSuffix>beta</VersionSuffix>
     <Authors>Chad T;Team Soda</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>AzureStorageWrapper</AssemblyName>
     <PackageId>AzureStorageWrapper</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <Company>Soda Digital</Company>
     <Description>Helpers for common patterns when using Azure Blob Storage</Description>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
