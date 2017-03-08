@@ -125,12 +125,11 @@ namespace Soda.Storage
                 };
                 var sas = blockBlob.GetSharedAccessSignature(policy);
 
-                Uri concatedUri;
-                if (Uri.TryCreate(returnUri, sas, out concatedUri))
+                if (Uri.TryCreate(returnUri, sas, out Uri concatedUri))
                 {
                     return concatedUri.ToString();
                 }
-                
+
             }
 
             return returnUri.ToString();
@@ -147,9 +146,8 @@ namespace Soda.Storage
             {
                 containerName = _defaultContainer;
             }
-            CloudBlobContainer container;
-            
-            if (!initialisedContainers.TryGetValue(containerName, out container))
+
+            if (!initialisedContainers.TryGetValue(containerName, out CloudBlobContainer container))
             {
                 container = _blobClient.GetContainerReference(containerName);
                 await container.CreateIfNotExistsAsync(_defaultContainerAccessType, null, null);
