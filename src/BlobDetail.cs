@@ -11,8 +11,8 @@ namespace Soda.Storage
         }
 
         public string Url { get; }
-        public long ContentLength {get;}
-        public string ContentType {get;}
+        public long ContentLength { get; }
+        public string ContentType { get; }
     }
 
 }
