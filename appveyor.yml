@@ -4,9 +4,9 @@ configuration: Release
 pull_requests:
   do_not_increment_build_number: true
 before_build:
+- dotnet --info
 - dotnet restore -v Minimal
 build_script:
-- dotnet --info
 - dotnet build -c %CONFIGURATION%
 after_build:
 - dotnet pack -c %CONFIGURATION%  --version-suffix beta-%APPVEYOR_BUILD_NUMBER% --no-build
