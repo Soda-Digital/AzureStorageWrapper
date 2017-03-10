@@ -5,9 +5,10 @@ VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureStorageWrapper", "src\AzureStorageWrapper.csproj", "{335DCB47-A629-4370-BEF7-BBEA764C08E2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{D8277CFD-A6B1-42F5-8885-BCEFDD757FB8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D8277CFD-A6B1-42F5-8885-BCEFDD757FB8}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
 	EndProjectSection
 EndProject
