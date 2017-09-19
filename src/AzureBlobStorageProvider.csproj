@@ -6,8 +6,12 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>AzureStorageWrapper</AssemblyName>
-    <PackageId>src</PackageId>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
+    <PackageId>SodaPop.Storage.AzureBlobStorageProvider</PackageId>
+    <Description>Wrapper around the Azure Blob Storage to handle container instantiations</Description>
+    <PackageProjectUrl>https://github.com/Soda-Digital/AzureStorageWrapper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Soda-Digital/AzureStorageWrapper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>azure</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
