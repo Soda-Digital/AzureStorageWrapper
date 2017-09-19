@@ -9,7 +9,7 @@ namespace Soda.Storage
 {
     public class AzureBlobStorageProvider
     {
-        private ConcurrentDictionary<string, CloudBlobContainer> initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
+        private readonly ConcurrentDictionary<string, CloudBlobContainer> _initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
         private readonly CloudBlobClient _blobClient;
         private readonly string _defaultContainer;
         private readonly BlobContainerPublicAccessType _defaultContainerAccessType;
@@ -19,7 +19,7 @@ namespace Soda.Storage
             _defaultContainerAccessType = defaultContainerAccessType;
             _defaultContainer = defaultContainer;
             CloudStorageAccount _storageAccount;
-            
+
             if (string.IsNullOrEmpty(connectionString))
             {
                 _storageAccount = CloudStorageAccount.DevelopmentStorageAccount;
@@ -50,7 +50,7 @@ namespace Soda.Storage
 
             var blockBlob = container.GetBlockBlobReference(reference);
             await blockBlob.UploadFromStreamAsync(resource);
-            
+
             if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
             {
                 blockBlob.Properties.CacheControl = "private";
@@ -60,7 +60,6 @@ namespace Soda.Storage
                 blockBlob.Properties.ContentType = contentType;
                 await blockBlob.SetPropertiesAsync();
             }
-
 
             return reference;
         }
@@ -89,14 +88,13 @@ namespace Soda.Storage
             ms.Position = 0;
 
             return ms;
-
         }
 
         public async Task DeleteResource(string resource, string containerName = null)
         {
             var container = await GetOrCreateContainer(containerName);
             var blockBlob = container.GetBlockBlobReference(resource);
-            await blockBlob.DeleteIfExistsAsync();            
+            await blockBlob.DeleteIfExistsAsync();
         }
 
         public async Task<string> BlobUrl(string resource, DateTime sasTimeout, string containerName = null)
@@ -123,7 +121,6 @@ namespace Soda.Storage
             }
 
             return returnUri;
-
         }
 
         private async Task<CloudBlobContainer> GetOrCreateContainer(string containerName)
@@ -136,21 +133,18 @@ namespace Soda.Storage
             {
                 containerName = _defaultContainer;
             }
-            CloudBlobContainer container;
-            
-            if (!initialisedContainers.TryGetValue(containerName, out container))
+
+            if (!_initialisedContainers.TryGetValue(containerName, out var container))
             {
                 container = _blobClient.GetContainerReference(containerName);
                 await container.CreateIfNotExistsAsync(_defaultContainerAccessType, null, null);
                 //preload container permissions.
                 await container.GetPermissionsAsync();
                 //add to list of initialise containers.
-                initialisedContainers.TryAdd(containerName, container);
+                _initialisedContainers.TryAdd(containerName, container);
             }
 
             return container;
         }
-
-      
     }
 }
