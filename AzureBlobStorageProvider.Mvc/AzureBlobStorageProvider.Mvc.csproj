@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Authors>Chad T, Team Soda</Authors>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <PackageId>SodaPop.Storage.AzureBlobStorageProvider.Mvc</PackageId>
+    <Description>MVC Core specific wrapper around the Azure Blob Storage to handle container instantiations</Description>
+    <PackageProjectUrl>https://github.com/Soda-Digital/AzureStorageWrapper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Soda-Digital/AzureStorageWrapper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>azure storage mvc</PackageTags>
+    <PackageLicenseUrl></PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="1.0.3" />
+    <PackageReference Include="SodaPop.Storage.AzureBlobStorageProvider" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

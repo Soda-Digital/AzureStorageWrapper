@@ -9,7 +9,7 @@ namespace Soda.Storage
 {
     public class AzureBlobStorageProvider
     {
-        private readonly ConcurrentDictionary<string, CloudBlobContainer> _initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
+        private readonly static ConcurrentDictionary<string, CloudBlobContainer> _initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
         private readonly CloudBlobClient _blobClient;
         private readonly string _defaultContainer;
         private readonly BlobContainerPublicAccessType _defaultContainerAccessType;

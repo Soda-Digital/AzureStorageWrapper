@@ -1,23 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <VersionPrefix>1.0.2-beta</VersionPrefix>
     <Authors>Chad T;Team Soda</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
-    <DebugType>portable</DebugType>
-    <AssemblyName>AzureStorageWrapper</AssemblyName>
     <PackageId>SodaPop.Storage.AzureBlobStorageProvider</PackageId>
     <Description>Wrapper around the Azure Blob Storage to handle container instantiations</Description>
     <PackageProjectUrl>https://github.com/Soda-Digital/AzureStorageWrapper</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Soda-Digital/AzureStorageWrapper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>azure</PackageTags>
+    <PackageTags>azure storage</PackageTags>
     <PackageLicenseUrl></PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="WindowsAzure.Storage" Version="8.4.0" />
-    <PackageReference Include="MimeMapping" Version="1.0.1.10" />
   </ItemGroup>
 
 </Project>
