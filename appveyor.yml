@@ -9,7 +9,7 @@ build_script:
 - dotnet --info
 - dotnet build  -c %CONFIGURATION%
 after_build:
-- dotnet pack src -c %CONFIGURATION%  --version-suffix {build}
+- dotnet pack src -c %CONFIGURATION%  --version-suffix %APPVEYOR_BUILD_NUMBER%
 artifacts:
 - path: src\bin\%CONFIGURATION%\*.nupkg
 #cache:
