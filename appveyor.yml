@@ -1,5 +1,4 @@
-version: 1.0.{build}
-os: Visual Studio 2015
+os: Visual Studio 2017
 configuration: Release
 pull_requests:
   do_not_increment_build_number: true
@@ -12,12 +11,9 @@ after_build:
 - dotnet pack src -c %CONFIGURATION%  --version-suffix %APPVEYOR_BUILD_NUMBER%
 artifacts:
 - path: src\bin\%CONFIGURATION%\*.nupkg
-#cache:
-#- '%USERPROFILE%\.nuget\packages -> **\project.json' Cache is actually slower...
 deploy:
   provider: NuGet
   server: https://www.myget.org/F/soda-digital/api/v2/package
   api_key:
     secure: E/HMTks6TaVLFL86uw1NStIvbrHsVrYo2lWnZpa9BVMz32/cYkd1KE9vXdByWTzT
   skip_symbols: true
-#  artifact: src\bin\%CONFIGURATION%\*\.nupkg

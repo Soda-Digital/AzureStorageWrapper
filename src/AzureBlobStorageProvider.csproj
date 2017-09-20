@@ -12,6 +12,7 @@
     <RepositoryUrl>https://github.com/Soda-Digital/AzureStorageWrapper</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>azure</PackageTags>
+    <PackageLicenseUrl></PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>
