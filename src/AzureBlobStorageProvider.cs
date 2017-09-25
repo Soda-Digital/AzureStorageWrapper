@@ -3,26 +3,10 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Soda.Storage
 {
-    internal class LockedContainer : CloudBlobContainer
-    {
-        public LockedContainer(Uri containerAddress) : base(containerAddress)
-        {
-        }
-
-        public LockedContainer(Uri containerAddress, StorageCredentials credentials) : base(containerAddress, credentials)
-        {
-        }
-
-        public LockedContainer(StorageUri containerAddress, StorageCredentials credentials) : base(containerAddress, credentials)
-        {
-        }
-    }
-
     public class AzureBlobStorageProvider
     {
         private readonly static ConcurrentDictionary<string, CloudBlobContainer> _initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
