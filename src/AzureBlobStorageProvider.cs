@@ -9,15 +9,11 @@ namespace Soda.Storage
 {
     public class AzureBlobStorageProvider
     {
-        private readonly static ConcurrentDictionary<string, CloudBlobContainer> _initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
+        //private readonly static ConcurrentDictionary<string, byte> _initialisedContainers = new ConcurrentDictionary<string, byte>();
         private readonly CloudBlobClient _blobClient;
-        private readonly string _defaultContainer;
-        private readonly BlobContainerPublicAccessType _defaultContainerAccessType;
 
-        public AzureBlobStorageProvider(string connectionString, string defaultContainer = null, BlobContainerPublicAccessType defaultContainerAccessType = BlobContainerPublicAccessType.Off)
+        public AzureBlobStorageProvider(string connectionString)
         {
-            _defaultContainerAccessType = defaultContainerAccessType;
-            _defaultContainer = defaultContainer;
             CloudStorageAccount _storageAccount;
 
             if (string.IsNullOrEmpty(connectionString))
@@ -31,7 +27,7 @@ namespace Soda.Storage
             _blobClient = _storageAccount.CreateCloudBlobClient();
         }
 
-        public async Task<string> Upload(Stream resource, string reference, string containerName = null, string contentType = null)
+        public async Task<string> Upload(Stream resource, string reference, string containerName, string contentType = null)
         {
             if (resource == null)
             {
@@ -41,12 +37,14 @@ namespace Soda.Storage
             {
                 throw new ArgumentNullException(nameof(reference));
             }
-            if (string.IsNullOrEmpty(_defaultContainer) && string.IsNullOrEmpty(containerName))
+            if (string.IsNullOrEmpty(containerName))
             {
                 throw new ArgumentNullException(nameof(containerName));
             }
 
-            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
+            var container = _blobClient.GetContainerReference(containerName);
+
+            await container.GetPermissionsAsync().ConfigureAwait(false);
 
             var blockBlob = container.GetBlockBlobReference(reference);
             await blockBlob.UploadFromStreamAsync(resource).ConfigureAwait(false);
@@ -64,7 +62,7 @@ namespace Soda.Storage
             return reference;
         }
 
-        public async Task<string> Upload(byte[] resource, string reference, string containerName = null, string contentType = null)
+        public async Task<string> Upload(byte[] resource, string reference, string containerName, string contentType = null)
         {
             if (resource == null)
             {
@@ -77,14 +75,18 @@ namespace Soda.Storage
             }
         }
 
-        public async Task<Stream> StreamResource(string resource, string containerName = null)
+        public async Task<Stream> StreamResource(string resource, string containerName)
         {
             if (string.IsNullOrEmpty(resource))
             {
                 throw new ArgumentNullException(nameof(resource));
             }
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentNullException(nameof(containerName));
+            }
 
-            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
+            var container = _blobClient.GetContainerReference(containerName);
 
             var blockBlob = container.GetBlockBlobReference(resource);
 
@@ -95,68 +97,68 @@ namespace Soda.Storage
             return ms;
         }
 
-        public async Task DeleteResource(string resource, string containerName = null)
+        public async Task DeleteResource(string resource, string containerName)
         {
             if (string.IsNullOrEmpty(resource))
             {
                 throw new ArgumentNullException(nameof(resource));
             }
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentNullException(nameof(containerName));
+            }
 
-            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
+            var container = _blobClient.GetContainerReference(containerName);
             var blockBlob = container.GetBlockBlobReference(resource);
             await blockBlob.DeleteIfExistsAsync().ConfigureAwait(false);
         }
 
-        public async Task<string> BlobUrl(string resource, DateTime sasTimeout, string containerName = null)
+        public string BlobUrl(string resource, string containerName)
         {
             if (string.IsNullOrEmpty(resource))
             {
                 throw new ArgumentNullException(nameof(resource));
             }
-            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentNullException(nameof(containerName));
+            }
+            var container = _blobClient.GetContainerReference(containerName);
+            var blockBlob = container.GetBlockBlobReference(resource);
+
+            return blockBlob.Uri.ToString();
+        }
+
+        public string BlobUrl(string resource, string containerName, DateTime sasTimeout)
+        {
+            if (string.IsNullOrEmpty(resource))
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
+            if (string.IsNullOrEmpty(containerName))
+            {
+                throw new ArgumentNullException(nameof(containerName));
+            }
+            var container = _blobClient.GetContainerReference(containerName);
             var blockBlob = container.GetBlockBlobReference(resource);
 
             var returnUri = blockBlob.Uri.ToString();
-
-            if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
+            var policy = new SharedAccessBlobPolicy()
             {
-                var policy = new SharedAccessBlobPolicy()
-                {
-                    Permissions = SharedAccessBlobPermissions.Read,
-                    SharedAccessExpiryTime = sasTimeout
-                };
-                var sas = blockBlob.GetSharedAccessSignature(policy);
-                //todo better url concat
-                returnUri += sas;
-            }
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessExpiryTime = sasTimeout
+            };
+            var sas = blockBlob.GetSharedAccessSignature(policy);
+            //todo better url concat
+            returnUri += sas;
 
             return returnUri;
         }
 
-        private async Task<CloudBlobContainer> GetOrCreateContainer(string containerName)
+        public async Task InitializeContainer(string containerName, BlobContainerPublicAccessType containerPublicAccessType)
         {
-            if (string.IsNullOrEmpty(_defaultContainer) && string.IsNullOrEmpty(containerName))
-            {
-                throw new ArgumentNullException(nameof(containerName));
-            }
-            if (string.IsNullOrEmpty(containerName))
-            {
-                containerName = _defaultContainer;
-            }
-
-            if (!_initialisedContainers.TryGetValue(containerName, out var container))
-            {
-                //get a reference to the container
-                container = _blobClient.GetContainerReference(containerName);
-                //create if it doesn't exist
-                await container.CreateIfNotExistsAsync(_defaultContainerAccessType, null, null).ConfigureAwait(false);
-                //preload container permissions.
-                await container.GetPermissionsAsync().ConfigureAwait(false);
-                //add to list of initialise containers.
-                _initialisedContainers.TryAdd(containerName, container);
-            }
-
-            return container;
+            var container = _blobClient.GetContainerReference(containerName);
+            await container.CreateIfNotExistsAsync(containerPublicAccessType, null, null).ConfigureAwait(false);
         }
     }
 }

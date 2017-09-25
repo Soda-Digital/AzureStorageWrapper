@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureBlobStorageProvider", "src\AzureBlobStorageProvider.csproj", "{2DC9285A-BEA8-44E1-ACC4-05288383F629}"
 EndProject
@@ -11,7 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureBlobStorageProvider.Mvc", "AzureBlobStorageProvider.Mvc\AzureBlobStorageProvider.Mvc.csproj", "{CF36753E-1735-490A-87D6-0E6275FAAFA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureBlobStorageProvider.Mvc", "AzureBlobStorageProvider.Mvc\AzureBlobStorageProvider.Mvc.csproj", "{CF36753E-1735-490A-87D6-0E6275FAAFA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureBlobStorageProvider.Tests", "AzureBlobStorageProvider.Tests\AzureBlobStorageProvider.Tests.csproj", "{AB87B320-A66A-43FD-8CF7-8C3593CC50CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{CF36753E-1735-490A-87D6-0E6275FAAFA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF36753E-1735-490A-87D6-0E6275FAAFA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF36753E-1735-490A-87D6-0E6275FAAFA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB87B320-A66A-43FD-8CF7-8C3593CC50CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB87B320-A66A-43FD-8CF7-8C3593CC50CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB87B320-A66A-43FD-8CF7-8C3593CC50CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB87B320-A66A-43FD-8CF7-8C3593CC50CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
