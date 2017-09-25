@@ -3,10 +3,26 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Soda.Storage
 {
+    internal class LockedContainer : CloudBlobContainer
+    {
+        public LockedContainer(Uri containerAddress) : base(containerAddress)
+        {
+        }
+
+        public LockedContainer(Uri containerAddress, StorageCredentials credentials) : base(containerAddress, credentials)
+        {
+        }
+
+        public LockedContainer(StorageUri containerAddress, StorageCredentials credentials) : base(containerAddress, credentials)
+        {
+        }
+    }
+
     public class AzureBlobStorageProvider
     {
         private readonly static ConcurrentDictionary<string, CloudBlobContainer> _initialisedContainers = new ConcurrentDictionary<string, CloudBlobContainer>();
@@ -46,10 +62,10 @@ namespace Soda.Storage
                 throw new ArgumentNullException(nameof(containerName));
             }
 
-            var container = await GetOrCreateContainer(containerName);
+            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
 
             var blockBlob = container.GetBlockBlobReference(reference);
-            await blockBlob.UploadFromStreamAsync(resource);
+            await blockBlob.UploadFromStreamAsync(resource).ConfigureAwait(false);
 
             if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
             {
@@ -58,7 +74,7 @@ namespace Soda.Storage
             if (!string.IsNullOrEmpty(contentType))
             {
                 blockBlob.Properties.ContentType = contentType;
-                await blockBlob.SetPropertiesAsync();
+                await blockBlob.SetPropertiesAsync().ConfigureAwait(false);
             }
 
             return reference;
@@ -73,18 +89,23 @@ namespace Soda.Storage
 
             using (var ms = new MemoryStream(resource))
             {
-                return await Upload(ms, reference, containerName, contentType);
+                return await Upload(ms, reference, containerName, contentType).ConfigureAwait(false);
             }
         }
 
         public async Task<Stream> StreamResource(string resource, string containerName = null)
         {
-            var container = await GetOrCreateContainer(containerName);
+            if (string.IsNullOrEmpty(resource))
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
+
+            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
 
             var blockBlob = container.GetBlockBlobReference(resource);
 
             var ms = new MemoryStream();
-            await blockBlob.DownloadToStreamAsync(ms);
+            await blockBlob.DownloadToStreamAsync(ms).ConfigureAwait(false);
             ms.Position = 0;
 
             return ms;
@@ -92,9 +113,14 @@ namespace Soda.Storage
 
         public async Task DeleteResource(string resource, string containerName = null)
         {
-            var container = await GetOrCreateContainer(containerName);
+            if (string.IsNullOrEmpty(resource))
+            {
+                throw new ArgumentNullException(nameof(resource));
+            }
+
+            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
             var blockBlob = container.GetBlockBlobReference(resource);
-            await blockBlob.DeleteIfExistsAsync();
+            await blockBlob.DeleteIfExistsAsync().ConfigureAwait(false);
         }
 
         public async Task<string> BlobUrl(string resource, DateTime sasTimeout, string containerName = null)
@@ -103,7 +129,7 @@ namespace Soda.Storage
             {
                 throw new ArgumentNullException(nameof(resource));
             }
-            var container = await GetOrCreateContainer(containerName);
+            var container = await GetOrCreateContainer(containerName).ConfigureAwait(false);
             var blockBlob = container.GetBlockBlobReference(resource);
 
             var returnUri = blockBlob.Uri.ToString();
@@ -136,10 +162,12 @@ namespace Soda.Storage
 
             if (!_initialisedContainers.TryGetValue(containerName, out var container))
             {
+                //get a reference to the container
                 container = _blobClient.GetContainerReference(containerName);
-                await container.CreateIfNotExistsAsync(_defaultContainerAccessType, null, null);
+                //create if it doesn't exist
+                await container.CreateIfNotExistsAsync(_defaultContainerAccessType, null, null).ConfigureAwait(false);
                 //preload container permissions.
-                await container.GetPermissionsAsync();
+                await container.GetPermissionsAsync().ConfigureAwait(false);
                 //add to list of initialise containers.
                 _initialisedContainers.TryAdd(containerName, container);
             }
