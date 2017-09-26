@@ -1,14 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Authors>Chad T;Team Soda</Authors>
     <TargetFramework>netstandard1.1</TargetFramework>
     <PackageId>SodaPop.Storage.AzureBlobStorageProvider</PackageId>
     <Description>Wrapper around the Azure Blob Storage to handle container instantiations</Description>
-    <PackageProjectUrl>https://github.com/Soda-Digital/AzureStorageWrapper</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Soda-Digital/AzureStorageWrapper</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <PackageTags>azure storage</PackageTags>
-    <PackageLicenseUrl></PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

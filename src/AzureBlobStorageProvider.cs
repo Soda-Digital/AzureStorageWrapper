@@ -4,12 +4,13 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Collections.Generic;
 
 namespace Soda.Storage
 {
     public class AzureBlobStorageProvider
     {
-        //private readonly static ConcurrentDictionary<string, byte> _initialisedContainers = new ConcurrentDictionary<string, byte>();
+        private readonly IDictionary<string, CloudBlobContainer> _cachedContainers = new Dictionary<string, CloudBlobContainer>();
         private readonly CloudBlobClient _blobClient;
 
         public AzureBlobStorageProvider(string connectionString)
@@ -27,7 +28,7 @@ namespace Soda.Storage
             _blobClient = _storageAccount.CreateCloudBlobClient();
         }
 
-        public async Task<string> Upload(Stream resource, string reference, string containerName, string contentType = null)
+        public async Task<string> Upload(Stream resource, string reference, string containerName, string contentType, string cacheControl = "private")
         {
             if (resource == null)
             {
@@ -44,25 +45,18 @@ namespace Soda.Storage
 
             var container = _blobClient.GetContainerReference(containerName);
 
-            await container.GetPermissionsAsync().ConfigureAwait(false);
-
             var blockBlob = container.GetBlockBlobReference(reference);
             await blockBlob.UploadFromStreamAsync(resource).ConfigureAwait(false);
 
-            if (container.Properties.PublicAccess == BlobContainerPublicAccessType.Off)
-            {
-                blockBlob.Properties.CacheControl = "private";
-            }
-            if (!string.IsNullOrEmpty(contentType))
-            {
-                blockBlob.Properties.ContentType = contentType;
-                await blockBlob.SetPropertiesAsync().ConfigureAwait(false);
-            }
+            blockBlob.Properties.CacheControl = cacheControl;
+            blockBlob.Properties.ContentType = contentType;
+
+            await blockBlob.SetPropertiesAsync().ConfigureAwait(false);
 
             return reference;
         }
 
-        public async Task<string> Upload(byte[] resource, string reference, string containerName, string contentType = null)
+        public async Task<string> Upload(byte[] resource, string reference, string containerName, string contentType, string cacheControl = "private")
         {
             if (resource == null)
             {
@@ -71,7 +65,7 @@ namespace Soda.Storage
 
             using (var ms = new MemoryStream(resource))
             {
-                return await Upload(ms, reference, containerName, contentType).ConfigureAwait(false);
+                return await Upload(ms, reference, containerName, contentType, cacheControl).ConfigureAwait(false);
             }
         }
 

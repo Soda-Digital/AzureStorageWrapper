@@ -9,6 +9,7 @@ namespace Soda.Storage
             this AzureBlobStorageProvider storage,
             IFormFile file,
             string reference,
-            string containerName = null) => storage.Upload(file.OpenReadStream(), reference, containerName, file.ContentType);
+            string containerName,
+            string cacheControl = "private") => storage.Upload(file.OpenReadStream(), reference, containerName, file.ContentType, cacheControl);
     }
 }

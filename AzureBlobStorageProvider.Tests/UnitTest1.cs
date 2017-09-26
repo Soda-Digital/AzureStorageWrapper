@@ -1,16 +1,14 @@
-using Soda.Storage;
 using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace AzureBlobStorageProvider.Tests
 {
-    public class UnitTest1
+    public class UnitTest
     {
         [Fact]
-        public async Task GetBlobUrl()
+        public void GetBlobUrl()
         {
-            var client = await new Soda.Storage.AzureBlobStorageProvider(string.Empty).InitializeContainers(Microsoft.WindowsAzure.Storage.Blob.BlobContainerPublicAccessType.Blob, "wtf", "foobar");
+            var client = new Soda.Storage.AzureBlobStorageProvider(string.Empty);
 
             var url = client.BlobUrl("catjpg", "wtf", DateTime.Now);
 

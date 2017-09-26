@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Chad T, Team Soda</Authors>
+    <PackageProjectUrl>https://github.com/Soda-Digital/AzureStorageWrapper</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Soda-Digital/AzureStorageWrapper</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+</Project>
